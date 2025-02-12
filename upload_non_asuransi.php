@@ -139,7 +139,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         <?php if (!empty($data)): ?>
             <div class="container-fluid">
-            <h3 class="mb-4">File Excel Klien Non Asuransi</h3>
+            <h3 class="mb-4">KlienNonAssurancePusat</h3>
             <div class="scrollable-table">
                 <table class="table table-striped table-bordered w-100">
                     <thead>
@@ -222,7 +222,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
             <form action="download_non_asuransi.php" method="POST">
                 <input type="hidden" name="download" value="1">
-                <button type="submit" class="btn btn-success">Download Hasil Konversi</button>
+                <div class="col-md-12 text-center mt-4">
+                <button type="submit" class="btn btn-success">Download </button></div>
             </form>
             <br>
             <br>
