@@ -24,7 +24,11 @@ $propinsiMapping = [];
 $negaraMapping = [];
 $bidangUsahaMapping = [];
 $standardMapping = [];
-$_SESSION['data']=[];
+$jasanonansuransMapping = []; // Inisialisasi variabel ini
+$jenisLkMapping = [];
+$kepemilikanMapping = [];
+$opiniMapping = [];
+$_SESSION['data'] = [];
 
 // Ambil data mapping untuk PROPINSI
 $result = $conn->query("SELECT id, name FROM propinsi");
@@ -38,7 +42,7 @@ while ($row = $result->fetch_assoc()) {
     $negaraMapping[$row['name']] = $row['id'];
 }
 
-//Ambil data mapping untuk jasa non asurans
+// Ambil data mapping untuk jasa non asurans
 $result = $conn->query("SELECT id, name FROM jasa_non_ansurans");
 while ($row = $result->fetch_assoc()) {
     $jasanonansuransMapping[$row['name']] = $row['id'];
@@ -62,7 +66,7 @@ while ($row = $result->fetch_assoc()) {
     $jenisLkMapping[$row['name']] = $row['id'];
 }
 
-// Ambil data mapping untuk jenis LK
+// Ambil data mapping untuk kepemilikan
 $result = $conn->query("SELECT id, name FROM kepemilikan");
 while ($row = $result->fetch_assoc()) {
     $kepemilikanMapping[$row['name']] = $row['id'];
@@ -94,11 +98,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $worksheet = $spreadsheet->getActiveSheet();
         $rows = $worksheet->toArray();
 
-        $_SESSION['data']=[];
-        // Ambil data mulai dari baris kedua
+        $_SESSION['data'] = [];
+ // Ambil data mulai dari baris kedua
         for ($i = 1; $i < count($rows); $i++) {
             $data[] = $rows[$i]; // Simpan data ke array
-            $_SESSION['data'][]=$rows[$i];
+            $_SESSION['data'][] = $rows[$i];
         }
         if (!isset($_POST['download'])) {
             //print_r($_SESSION['data']);
@@ -108,17 +112,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 // Fungsi untuk mengunduh data sebagai file Excel
 if (isset($_POST['download'])) {
-    echo "hahaha";
-    $isi= $_SESSION['data'];
+    echo "Success";
+    $isi = $_SESSION['data'];
     //print_r($isi);
-    foreach ($isi as $row) {
-        $colCount = 'A';
-        foreach ($row as $cell) {
-            echo $colCount . $rowCount. $cell;
-            $colCount++;
-        }
-        $rowCount++;
-    }
     $spreadsheet = new Spreadsheet();
     $sheet = $spreadsheet->getActiveSheet();
 
@@ -131,7 +127,7 @@ if (isset($_POST['download'])) {
     $sheet->setCellValue('F1', 'NPWP');
     $sheet->setCellValue('G1', 'JASA_NON_ASURANSI');
     $sheet->setCellValue('H1', 'GO_PUBLIK');
-    $sheet->setCellValue('I1', 'KEPEILIKAN');
+    $sheet->setCellValue('I1', 'KEPEMILIKAN');
     $sheet->setCellValue('J1', 'PERIODE_AWAL');
     $sheet->setCellValue('K1', 'PERIODE_AKHIR');
     $sheet->setCellValue('L1', 'MATA_UANG_FEE_JASA');
@@ -142,23 +138,26 @@ if (isset($_POST['download'])) {
     $rowCount = 2; // Mulai dari baris kedua
     foreach ($isi as $row) {
         $colCount = 'A';
+        $propinsiId = isset($propinsiMapping[$row[7]]) ? $propinsiMapping[$row[7]] : null; // PROPINSI
+        $negaraId = isset($negaraMapping[$row[8]]) ? $negaraMapping[$row[8]] : null; // NEGARA
         foreach ($row as $cell) {
             $sheet->setCellValue($colCount . $rowCount, $cell);
             $colCount++;
         }
+        $sheet->setCellValue('H' . $rowCount, $propinsiId);
+        $sheet->setCellValue('I' . $rowCount, $negaraId);
         $rowCount++;
     }
 
     // Mengatur header untuk unduhan
     header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-    header('Content-Disposition: attachment; filename="hasil_data.xlsx"');
+    header('Content-Disposition: attachment; filename="non-assurance.Xlsx"');
     header('Cache-Control: max-age=0');
 
     // Menyimpan file Excel
     $writer = new Xlsx($spreadsheet);
     $writer->save('php://output');
     exit;
-
 }
 ?>
 
@@ -170,46 +169,42 @@ if (isset($_POST['download'])) {
     <title>Upload Excel</title>
 </head>
 <body>
-   
-
     <?php if (!empty($data)): ?>
-        
         <table border="1">
             <thead>
                 <tr>
-                <th>NO_URUT</th>
-                <th>NAMA KLIEN</th>
-                <th>NO_LAPORAN</th>
-                <th>TGL_LAPORAN</th>
-                <th>ALAMAT</th>
-                <th>NPWP</th>
-                <th>JASA_NON_ASURANSI</th>
-                <th>GO_PUBLIK</th>
-                <th>KEPEMILIKAN</th>
-                <th>PERIODE_AWAL</th>
-                <th>PERIODE_AKHIR</th>
-                <th>MATA_UANG_FEE_JASA</th>
-                <th>FEE_JASA</th>
-                <th>NPWP</th>
+                    <th>NO_URUT</th>
+                    <th>NAMA KLIEN</th>
+                    <th>NO_LAPORAN</th>
+                    <th>TGL_LAPORAN</th>
+                    <th>ALAMAT</th>
+                    <th>NPWP</th>
+                    <th>JASA_NON_ASURANSI</th>
+                    <th>GO_PUBLIK</th>
+                    <th>KEPEMILIKAN</th>
+                    <th>PERIODE_AWAL</th>
+                    <th>PERIODE_AKHIR</th>
+                    <th>MATA_UANG_FEE_JASA</th>
+                    <th>FEE_JASA</th>
+                    <th>NPWP</th>
                 </tr>
             </thead>
             <tbody>
             <?php
             // Loop melalui baris dan masukkan ke tabel
             foreach ($data as $row) {
-                // Mapping kolom yang perlu diubah
                 $restatement = ($row[4] === 'Ya') ? 1 : 0; // RESTATEMENT
-                $jasanonansuransId = isset($jasanonansuransMapping[$row[7]]) ? $jasanonansuransMapping[$row[6]] : null; // PROPINSI
-               // $propinsiId = isset($propinsiMapping[$row[7]]) ? $propinsiMapping[$row[7]] : null; // PROPINSI
-               // $negaraId = isset($negaraMapping[$row[8]]) ? $negaraMapping[$row[8]] : null; // NEGARA
+                $jasanonansuransId = isset($jasanonansuransMapping[$row[6]]) ? $jasanonansuransMapping[$row[6]] : null; // J ASA NON ASURANSI
+                $propinsiId = isset($propinsiMapping[$row[7]]) ? $propinsiMapping[$row[7]] : null; // PROPINSI
+                $negaraId = isset($negaraMapping[$row[8]]) ? $negaraMapping[$row[8]] : null; // NEGARA
                 $memilikiNpwp = ($row[9] === 'Ya') ? 1 : 0; // MEMILIKI NPWP
                 $bidangUsahaId = isset($bidangUsahaMapping[$row[11]]) ? $bidangUsahaMapping[$row[11]] : null; // BIDANG USAHA
                 $goPublik = ($row[12] === 'Ya') ? 1 : 0; // GO PUBLIK
-                $standarId = isset($standardMapping[$row[13]]) ? $standardMapping[$row[13]] : null; // NEGARA
-                $jenisLkId = isset($jenisLkMapping[$row[14]]) ? $jenisLkMapping[$row[14]] : null; // jenisLk
-                $kepemilikanId = isset($kepemilikanMapping[$row[15]]) ? $kepemilikanMapping[$row[15]] : null; // kepemilikan
-                $opiniId = isset($opiniMapping[$row[16]]) ? $opiniMapping[$row[16]] : null; // opini
-                $konsolidasiId = ($row[43] === 'Ya') ? 1 : 0; // RESTATEMENT
+                $standarId = isset($standardMapping[$row[13]]) ? $standardMapping[$row[13]] : null; // STANDAR
+                $jenisLkId = isset($jenisLkMapping[$row[14]]) ? $jenisLkMapping[$row[14]] : null; // JENIS LK
+                $kepemilikanId = isset($kepemilikanMapping[$row[15]]) ? $kepemilikanMapping[$row[15]] : null; // KEPEMILIKAN
+                $opiniId = isset($opiniMapping[$row[0]]) ? $opiniMapping[$row[3]] : null; // OPINI
+                $konsolidasiId = isset($row[43]) ? ($row[43] === 'Ya' ? 1 : 0) : null; // KONSOLIDASI
 
                 // Tampilkan data dalam tabel
                 echo "<tr>
@@ -219,7 +214,7 @@ if (isset($_POST['download'])) {
                         <td>{$row[3]}</td>
                         <td>{$row[4]}</td>
                         <td>{$row[5]}</td>
-                        <td>{$row[6]}</td>
+                        <td>{$jasanonansuransId}</td>
                         <td>{$propinsiId}</td>
                         <td>{$negaraId}</td>
                         <td>{$memilikiNpwp}</td>
@@ -227,9 +222,6 @@ if (isset($_POST['download'])) {
                         <td>{$bidangUsahaId}</td>
                         <td>{$goPublik}</td>
                         <td>{$standarId}</td>
-                       
-                        
-                     
                     </tr>";
             }
             ?>
@@ -238,8 +230,7 @@ if (isset($_POST['download'])) {
 
         <form action="?download=ok" method="post">
             <input type="hidden" name="download" value="1">
-            <input type="submit" value="Download Excel">
+            <input type="submit" value="Download Excel" style="text-align:center;">
         </form>
     <?php endif; ?>
-</body>
-</html>
+</body></html>
