@@ -51,6 +51,10 @@
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
 
+        input[type="file"] {
+            display:none;
+        }
+
         .upload-form {
             display: none;
         }
@@ -76,6 +80,7 @@
         .drop-zone p {
             color: #666;
             margin: 0;
+        
         }
 
         .convert-button {
@@ -93,24 +98,48 @@
             background: #4f2d7f;
         }
 
+        .button-loader {
+    width: 1.5em;
+    height: 1.5em;
+    transform-origin: center;
+    animation: rotate4 2s linear infinite;
+    vertical-align: middle;
+    margin-left: 8px;
+}
+
+.button-loader circle {
+    fill: none;
+    stroke: white;
+    stroke-width: 2;
+    stroke-dasharray: 1, 200;
+    stroke-dashoffset: 0;
+    stroke-linecap: round;
+    animation: dash4 1.5s ease-in-out infinite;
+}
+
+@keyframes rotate4 {
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes dash4 {
+    0% {
+        stroke-dasharray: 1, 200;
+        stroke-dashoffset: 0;
+    }
     
+    50% {
+        stroke-dasharray: 90, 200;
+        stroke-dashoffset: -35px;
+    }
+    
+    100% {
+        stroke-dashoffset: -125px;
+    }
+}
 
-        input[type="file"] {
-            display: none;
-        }
-
-        @keyframes spin {
-            0% {transform: rotate(0deg);}
-            100% {transform: rotate(360deg);}
-        }
-
-        .loading {
-            animation: spin 1s linear infinite; 
-        }
-
-        input[type="file"] {
-            display: none;
-        }
+    
     </style>
 </head>
 <body>
@@ -128,7 +157,12 @@
                 <p>Drop file here</p>
             </div>
             <input type="file" name="excel_file" id="insurance_file" accept=".xlsx,.xls" required>
-            <button type="submit" class="convert-button">Convert Excel</button>
+            <button type="submit" class="convert-button">
+                <span class="button-text">Convert Excel</span>
+                <svg viewBox="25 25 50 50" class="button-loader" style="display: none;">
+                    <circle r="20" cy="50" cx="50"></circle>
+                </svg>
+            </button>
         </form>
 
         <!-- Non-Insurance Upload Form -->
@@ -137,7 +171,12 @@
                 <p>Drop file here</p>
             </div>
             <input type="file" name="excel_file" id="non_insurance_file" accept=".xlsx,.xls" required>
-            <button type="submit" class="convert-button">Convert Excel</button>
+            <button type="submit" class="convert-button">
+            <span class="button-text">Convert Excel</span>
+                <svg viewBox="25 25 50 50" class="button-loader" style="display: none;">
+                    <circle r="20" cy="50" cx="50"></circle>
+                </svg>
+            </button>
         </form>
     </div>
 
@@ -192,13 +231,23 @@
         }
 
         document.querySelectorAll('.convert-button').forEach(button => {
-    button.addEventListener('click', function() {
-      
-        this.classList.add('loading');
-    
-        setTimeout(() => {
-            this.classList.remove('loading');
-        }, 3000); 
+    button.addEventListener('click', function(e) {
+        // Sembunyikan teks button
+        const buttonText = this.querySelector('.button-text');  // Perbaikan typo di sini
+        const loader = this.querySelector('.button-loader');    // Perbaikan typo di sini
+        
+        buttonText.style.display = 'none';
+        loader.style.display = 'inline-block';
+        
+        // Jika ini button submit, tunda submit form untuk menampilkan animasi
+        if (this.type === "submit") {
+            e.preventDefault();
+            
+            // Submit form setelah delay singkat
+            setTimeout(() => {
+                this.closest('form').submit();
+            }, 1500);
+        }
     });
 });
 
