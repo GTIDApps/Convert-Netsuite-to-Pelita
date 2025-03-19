@@ -1,7 +1,6 @@
 <?php
 session_start();
-require 'vendor/autoload.php'; // Jika Anda menggunakan Composer untuk menginstal PhpSpreadsheet
-
+require 'vendor/autoload.php'; 
 use PhpOffice\PhpSpreadsheet\IOFactory;
 
 // Konfigurasi koneksi database
@@ -134,44 +133,67 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <!-- Bootstrap CSS -->
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <style>
-body {
-    width:100%
-}
-
+        body {
+        width:100%;
+        margin: 200px auto;
+        }
 
         .scrollable-table {
-            max-height: 400px;
-    /* Sesuaikan tinggi maksimum tabel */
-           overflow-y:auto;
-        }
-
-        .container-fluid {
-            width: 100%
+            max-height : 400px;
+            max-widht : 1500px; 
+              overflow-y: auto;
 
         }
 
+        th {
+            font-size :14px;
+            font-weight : 700;   
+            color:white;
+        }
+
+        h4 {
+            font-weight : bold;
+            font-size : 24px;
+        }
+
+       table.table {
+            border: 2px solid black;
+        }
+
+        table.table-bordered, table.table-striped  {
+            border: 2px solid black !important; 
+        }
+
+        .back-button {
+            position : absolute;
+            top:50px;
+            left:50px;
+        }
+        .table-purple {
+            background-color:#6f42c1 !important;
+        }
+
+        .btn-table {
+            background-color: #6f42c1 !important;
+            color:white;
+        }
     </style>
 </head>
 <body>
+    <div class="back-button">
+        <a href="index.php" class="btn btn-table">Back</a>
+     </div>
     
      <div class="container mt-5">
-        <!-- <h2 class="mb-4">Upload File Excel Klien Pusat</h2>
-        <form action="" method="post" enctype="multipart/form-data" class="mb-4">
-            <div class="form-group">
-                <input type="file" name="excel_file" class="form-control-file" required>
-            </div>
-            <button type="submit" class="btn btn-primary">Upload</button>
-        </form> --> 
-
         <?php if (!empty($data)): ?>
             <center>
         <div class="container-fluid">
-            <h4 class="mb-4">KlienAuPusat</h4>
+            <h4 class="mb-4">Audit Pusat</h4>
             <div class="scrollable-table">
                 <table class="table table-striped table-bordered w-100">
                     <thead>
                         <tbody class="table-group-divider">
-                        <tr class="table-primary">
+                        <tr class="table table-purple">
                             <th>ID</th>
                             <th>NAMA KLIEN</th>
                             <th>NO LAI</th>
@@ -341,7 +363,7 @@ body {
 
             <form action="download.php" method="POST">
                 <input type="hidden" name="download" value="1">
-            <div class="col-md-12 text-center mt-4">
+            <div class="col-md-12 text-center mt-5">
                 <button type="submit" class="btn btn-success">Download</button>
                 </div>
             </form>

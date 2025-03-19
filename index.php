@@ -10,8 +10,8 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            min-height: 100vh;
-            margin: 0;
+            min-height: 50vh;
+            margin: 200px auto;
             background-color: #ffffff;
         }
 
@@ -60,7 +60,7 @@
         }
 
         .drop-zone {
-            border: 2px dashed #ccc;
+            border: 2px dashed #000;
             border-radius: 4px;
             padding: 40px;
             text-align: center;
@@ -93,6 +93,21 @@
             background: #4f2d7f;
         }
 
+    
+
+        input[type="file"] {
+            display: none;
+        }
+
+        @keyframes spin {
+            0% {transform: rotate(0deg);}
+            100% {transform: rotate(360deg);}
+        }
+
+        .loading {
+            animation: spin 1s linear infinite; 
+        }
+
         input[type="file"] {
             display: none;
         }
@@ -110,7 +125,7 @@
         <!-- Insurance Upload Form -->
         <form id="insurance-form" class="upload-form active" action="upload.php" method="post" enctype="multipart/form-data">
             <div class="drop-zone" onclick="document.getElementById('insurance_file').click()">
-                <p>Choose file or drag it here</p>
+                <p>Drop file here</p>
             </div>
             <input type="file" name="excel_file" id="insurance_file" accept=".xlsx,.xls" required>
             <button type="submit" class="convert-button">Convert Excel</button>
@@ -119,7 +134,7 @@
         <!-- Non-Insurance Upload Form -->
         <form id="non-insurance-form" class="upload-form" action="upload_non_asuransi.php" method="post" enctype="multipart/form-data">
             <div class="drop-zone" onclick="document.getElementById('non_insurance_file').click()">
-                <p>Choose file or drag it here</p>
+                <p>Drop file here</p>
             </div>
             <input type="file" name="excel_file" id="non_insurance_file" accept=".xlsx,.xls" required>
             <button type="submit" class="convert-button">Convert Excel</button>
@@ -128,13 +143,13 @@
 
     <script>
         function switchTab(type) {
-            // Update tab buttons
+           
             document.querySelectorAll('.tab-button').forEach(button => {
                 button.classList.remove('active');
             });
             event.target.classList.add('active');
 
-            // Update forms
+          
             document.querySelectorAll('.upload-form').forEach(form => {
                 form.classList.remove('active');
             });
@@ -145,7 +160,7 @@
             }
         }
 
-        // Handle drag and drop for both forms
+        // Edit disini untuk drop and drag file
         function setupDragAndDrop(formId, fileInputId) {
             const dropZone = document.querySelector(`#${formId} .drop-zone`);
             const fileInput = document.getElementById(fileInputId);
@@ -175,6 +190,17 @@
                 }
             });
         }
+
+        document.querySelectorAll('.convert-button').forEach(button => {
+    button.addEventListener('click', function() {
+      
+        this.classList.add('loading');
+    
+        setTimeout(() => {
+            this.classList.remove('loading');
+        }, 3000); 
+    });
+});
 
         // Setup drag and drop for both forms
         setupDragAndDrop('insurance-form', 'insurance_file');

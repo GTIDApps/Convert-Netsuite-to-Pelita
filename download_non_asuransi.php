@@ -33,7 +33,8 @@ use PhpOffice\PhpSpreadsheet\Style\Alignment;
     $sheet->setCellValue('M1', 'PENANGGUNG JAWAB');
     $sheet->setCellValue('N1', 'MATA UANG FEE JASA');
     $sheet->setCellValue('O1', 'FEE JASA');
-    $sheet->setCellValue('P1', 'NPWP16');
+    $sheet->setCellValue('P1', 'PROPONSI');
+    $sheet->setCellValue('Q1', 'NPWP16');
     // Mengatur gaya header
     $headerStyle = [
         'font' => [
@@ -60,7 +61,7 @@ use PhpOffice\PhpSpreadsheet\Style\Alignment;
 
     // Mengatur filter pada header
     $autoFilter = $sheet->getAutoFilter();
-    $autoFilter->setRange('A1:P1');
+    $autoFilter->setRange('A1:Q1');
 
     // Mengatur gaya sel data
     $dataStyle = [
@@ -76,19 +77,19 @@ use PhpOffice\PhpSpreadsheet\Style\Alignment;
         ],
     ];
     // Menambahkan data ke dalam sheet
-    $rowCount = 2; // Mulai dari baris kedua
+    $rowCount = 1; // Mulai dari baris kedua
     foreach ($_SESSION['data'] as $row) {
         $colCount = 'A';
 
         foreach ($row as $cell) {
             $cell=strval($cell);
             //echo strlen($cell);
-            if (strlen($cell)==16){
+            if (strlen($cell)==17){
                 $cell= "'".$cell;
             }
             $sheet->setCellValue($colCount . $rowCount, $cell);
             $sheet->getStyle($colCount . $rowCount)->applyFromArray($dataStyle);
-            if($rowCount % 2 ==0 ){
+            if($rowCount % 1 ==0 ){
                 $sheet->getStyle($colCount . $rowCount)->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setARGB('DFEAF6');
             }
             $colCount++;
