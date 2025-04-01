@@ -135,8 +135,8 @@ header {
                     <div class="tool-icon">
                         <img src="images/excel-icon.png" alt="Excel Icon">
                     </div>
-                    <h3>EXCEL TO EXCEL</h3>
-                    <p>Lorem Ipsum has been the industry's standard dummy text ever.</p>
+                    <h3>Generate to Netsuite</h3>
+                    <p>This is tools for generate template excel Netsuite.</p>
                 </div>
 
                 <div class="tool-card">
@@ -144,7 +144,7 @@ header {
                         <img src="images/word-icon.png" alt="Word Icon">
                     </div>
                     <div class="coming-soon">Coming soon!</div>
-                    <h3>WORD TO EXCEL</h3>
+                    <h3>Undifined</h3>
                     <p>Lorem Ipsum has been the industry's standard dummy text ever.</p>
                 </div>
             </div>
